@@ -66,12 +66,12 @@ fi
 
 # Install PyPi Dependencies
 if [[ -v PyPiDeps ]]; then
-    pip install $PyPiDeps
+    pip install $PyPiDeps -q
 fi
 
 # Install Local Package
 if [[ -v LocalPackage ]]; then
-    pip install $LocalPackage
+    pip install $LocalPackage -q
 fi
 
 # Add Entry Point to the path
