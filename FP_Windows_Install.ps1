@@ -1,3 +1,5 @@
+$ErrorActionPreference = "Stop"
+
 # Name of application to install
 $AppName="YourApplicationName"
 
@@ -6,11 +8,11 @@ $InstallDir="YourApplicationFolder"
 
 # Dependencies installed by Conda
 # Commend out the next line if no Conda dependencies
-$CondaDeps="numpy scipy scikit-learn pandas"
+$CondaDeps="numpy","scipy","scikit-learn","pandas" # some examples
 
 # Dependencies installed with pip instead
 # Comment out the next line if no PyPi dependencies
-$PyPiDeps="YourApplicationName"
+$PyPiPackage="mypackage"
 
 # Local packages to install
 # Useful if your application is not in PyPi
@@ -33,32 +35,32 @@ Write-Host "`nDownloading Miniconda Installer...`n"
 
 # Install Python environment through Miniconda
 Write-Host "Installing Miniconda...`n"
-Start-Process Miniconda_Install.exe "/S /AddToPath=0 /D=$pwd\$InstallDir" -NoNewWindow -Wait
+Start-Process Miniconda_Install.exe "/S /AddToPath=0 /D=$pwd\$InstallDir" -Wait
 
 # Install Dependences to the new Python environment
 $env:Path = "$pwd\$InstallDir\Scripts;" + $env:Path
 
-if(Test-Path variable:global:CondaDeps)
+if(Test-Path variable:CondaDeps)
 {
     Write-Host "Installing Conda dependencies...`n"
     conda install $CondaDeps -y
 }
 
-if(Test-Path variable:global:PyPiDeps)
+if(Test-Path variable:PyPiPackage)
 {
     Write-Host "Installing PyPi dependencies...`n"
-    pip install $PyPiDeps -q
+    pip install $PyPiPackage
 }
 
-if(Test-Path variable:global:LocalPackage)
+if(Test-Path variable:LocalPackage)
 {
-Write-Host "Installing Local package...`n"
-pip install $LocalPackage
+    Write-Host "Installing Local package...`n"
+    pip install $LocalPackage
 }
 
 # Add Entry Point to path
 
-if(Test-Path variable:global:EntryPoint)
+if(Test-Path variable:EntryPoint)
 {
     # Move entry-point executable to an isolated folder
     $script_folder = "$pwd\$InstallDir\PathScripts"
@@ -82,8 +84,8 @@ if(Test-Path variable:global:EntryPoint)
     if($result -eq 0)
     {
         # Update the user's path
-        $old_path = (Get-ItemProperty -Path HKCU:\Environment -Name PATH).Path
-        $new_path = $fp_script_folder + ";" + $old_path
+        $old_path = (Get-ItemProperty -Path HKCU:\Environment).Path
+        $new_path = $script_folder + ";" + $old_path
         cmd /c "setx PATH $new_path"
         Set-ItemProperty -Path HKCU:\Environment -Name PATH -Value $new_path
         Write-Host "User PATH has been updated"
@@ -97,4 +99,11 @@ if(Test-Path variable:global:EntryPoint)
     }
 }
 
-Write-Host "`\n$AppName Successfully Installed"
+# Cleanup
+Remove-Item "Miniconda_Install.exe"
+
+Write-Host "`n$AppName Successfully Installed"
+
+Write-Host "Press any key to continue ..."
+
+$x = $host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown")
