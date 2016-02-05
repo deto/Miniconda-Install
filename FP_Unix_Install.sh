@@ -10,9 +10,9 @@ InstallDir="YourApplicationFolder"
 # Commend out the next line if no Conda dependencies
 CondaDeps="numpy scipy scikit-learn pandas"
 
-# Dependencies installed with pip instead
-# Comment out the next line if no PyPi dependencies
-PyPiDeps="YourApplicationName"
+# Install the package from PyPi
+# Comment out next line if installing locally
+PyPiPackage="mypackage"
 
 # Local packages to install
 # Useful if your application is not in PyPi
@@ -64,9 +64,9 @@ if [[ -v CondaDeps ]]; then
     conda install $CondaDeps -y
 fi
 
-# Install PyPi Dependencies
-if [[ -v PyPiDeps ]]; then
-    pip install $PyPiDeps -q
+# Install Package from PyPi
+if [[ -v PyPiPackage ]]; then
+    pip install $PyPiPackage -q
 fi
 
 # Install Local Package
