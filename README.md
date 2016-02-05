@@ -1,2 +1,2 @@
 # Miniconda-Install
-Install Python packages as stand-alone applications using Miniconda
+Cross-Platform solution to installing a stand-alone Python application using Miniconda
