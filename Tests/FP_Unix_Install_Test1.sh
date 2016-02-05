@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+set -e
 
 # Name of application to install
 AppName="LinuxTest1"
@@ -42,22 +43,24 @@ then
 fi
 
 # Test if new directory is empty.  Exit if it's not
-if [ "$(ls -A $(pwd)/$InstallDir)" ]; then
-    echo "ERROR: Directory is not empty" >&2
-    echo "If you want to install into $(pwd)/$InstallDir, "
-    echo "clear the directory first and run this script again."
-    echo "Exiting..."
-    echo
-    exit 1
+if [ -d $(pwd)/$InstallDir ]; then
+    if [ "$(ls -A $(pwd)/$InstallDir)" ]; then
+        echo "ERROR: Directory is not empty" >&2
+        echo "If you want to install into $(pwd)/$InstallDir, "
+        echo "clear the directory first and run this script again."
+        echo "Exiting..."
+        echo
+        exit 1
+    fi
 fi
 
 # Download and install Miniconda
-curl "https://repo.continuum.io/miniconda/Miniconda-latest-Linux-x86_64.sh" -o Miniconda_Install.sh
+curl "http://repo.continuum.io/miniconda/Miniconda-latest-Linux-x86_64.sh" -o Miniconda_Install.sh
 
 bash Miniconda_Install.sh -b -f -p $InstallDir
 
 # Activate the new environment
-$InstallDir/bin/activate
+PATH="$(pwd)/$InstallDir/bin":$PATH
 
 # Install Conda Dependencies
 if [[ -v CondaDeps ]]; then
