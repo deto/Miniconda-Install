@@ -8,7 +8,7 @@ AppName="YourApplicationName"
 InstallDir="YourApplicationFolder"
 
 # Dependencies installed by Conda
-# Commend out the next line if no Conda dependencies
+# Comment out the next line if no Conda dependencies
 CondaDeps="numpy scipy scikit-learn pandas"
 
 # Install the package from PyPi
@@ -61,6 +61,22 @@ bash Miniconda_Install.sh -b -f -p $InstallDir
 
 # Activate the new environment
 PATH="$(pwd)/$InstallDir/bin":$PATH
+
+# Make the new python environment completely independent
+# Modify the site.py file so that USER_SITE is not imported
+python -s << END
+import site
+site_file = site.__file__.replace(".pyc", ".py");
+with open(site_file) as fin:
+    lines = fin.readlines();
+for i,line in enumerate(lines):
+    if(line.find("ENABLE_USER_SITE = None") > -1):
+        user_site_line = i;
+        break;
+lines[user_site_line] = "ENABLE_USER_SITE = False\n"
+with open(site_file,'w') as fout:
+    fout.writelines(lines)
+END
 
 # Install Conda Dependencies
 if [[ -v CondaDeps ]]; then
