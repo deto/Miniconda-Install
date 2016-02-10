@@ -79,22 +79,22 @@ with open(site_file,'w') as fout:
 END
 
 # Install Conda Dependencies
-if [[ -v CondaDeps ]]; then
+if [[ $CondaDeps ]]; then
     conda install $CondaDeps -y
 fi
 
 # Install Package from PyPi
-if [[ -v PyPiPackage ]]; then
+if [[ $PyPiPackage ]]; then
     pip install $PyPiPackage -q
 fi
 
 # Install Local Package
-if [[ -v LocalPackage ]]; then
+if [[ $LocalPackage ]]; then
     pip install $LocalPackage -q
 fi
 
 # Add Entry Point to the path
-if [[ -v EntryPoint ]]; then
+if [[ $EntryPoint ]]; then
 
     cd $InstallDir
     mkdir Scripts
