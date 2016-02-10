@@ -40,6 +40,23 @@ Start-Process Miniconda_Install.exe "/S /AddToPath=0 /D=$pwd\$InstallDir" -Wait
 # Install Dependences to the new Python environment
 $env:Path = "$pwd\$InstallDir\Scripts;" + $env:Path
 
+# Make the new python environment completely independent
+# Modify the site.py file so that USER_SITE is not imported
+$site_program = @"
+import site
+site_file = site.__file__.replace('.pyc', '.py');
+with open(site_file) as fin:
+    lines = fin.readlines();
+for i,line in enumerate(lines):
+    if(line.find('ENABLE_USER_SITE = None') > -1):
+        user_site_line = i;
+        break;
+lines[user_site_line] = 'ENABLE_USER_SITE = False\n'
+with open(site_file,'w') as fout:
+    fout.writelines(lines)
+"@
+python -c $site_program
+
 if(Test-Path variable:CondaDeps)
 {
     Write-Host "Installing Conda dependencies...`n"
@@ -89,7 +106,7 @@ if(Test-Path variable:EntryPoint)
         cmd /c "setx PATH $new_path"
         Set-ItemProperty -Path HKCU:\Environment -Name PATH -Value $new_path
         Write-Host "User PATH has been updated"
-        Write-Host "Restart your terminal to see change"
+        Write-Host "Open a new command prompt to see the change."
     }
     else
     {
@@ -103,3 +120,7 @@ if(Test-Path variable:EntryPoint)
 Remove-Item "Miniconda_Install.exe"
 
 Write-Host "`n$AppName Successfully Installed"
+
+Write-Host "Press any key to continue ..."
+
+$x = $host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown")
