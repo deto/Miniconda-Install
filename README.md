@@ -1,6 +1,11 @@
 # Miniconda-Install
 Cross-Platform solution to installing a stand-alone Python application using Miniconda
 
+The main advantages to this approach is:
+- Single command to install
+- Install is fully isolated (won't interfere with, or be mixed up by an existing Python install)
+- No dependencies needed prior to install
+
 Here are three scripts (one for each major platform) which can be modified to perform an isolated install of a python application.  All that is needed is to configure a few environment variables at the top of the file and then the files can be run by:
 
 ## OSX or Linux
