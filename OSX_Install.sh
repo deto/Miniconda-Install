@@ -98,6 +98,10 @@ if [[ $LocalPackage ]]; then
     pip install $LocalPackage -q
 fi
 
+# Cleanup
+rm Miniconda_Install.sh
+conda clean -iltp --yes
+
 # Add Entry Point to the path
 if [[ $EntryPoint ]]; then
 
@@ -122,9 +126,6 @@ if [[ $EntryPoint ]]; then
 
     cd ..
 fi
-
-# Cleanup
-rm Miniconda_Install.sh
 
 echo
 echo "$AppName Install Successfully"

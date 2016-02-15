@@ -75,6 +75,10 @@ if(Test-Path variable:LocalPackage)
     pip install $LocalPackage
 }
 
+# Cleanup
+Remove-Item "Miniconda_Install.exe"
+conda clean -iltp --yes
+
 # Add Entry Point to path
 
 if(Test-Path variable:EntryPoint)
@@ -115,9 +119,6 @@ if(Test-Path variable:EntryPoint)
         Write-Host "It is located in: $script_folder`n"
     }
 }
-
-# Cleanup
-Remove-Item "Miniconda_Install.exe"
 
 Write-Host "`n$AppName Successfully Installed"
 
